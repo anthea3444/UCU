@@ -19,6 +19,7 @@ app.get('/api/db-test', async (req, res) => {
     res.status(500).json({ connected: false, error: err.message });
   }
 });
+app.use('/api/auth', require('./routes/authRoutes'));
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, (err) => {
   if (err) {
