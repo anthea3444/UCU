@@ -34,6 +34,3 @@ CREATE TABLE IF NOT EXISTS claims (
   FOREIGN KEY (item_id) REFERENCES items(id),
   FOREIGN KEY (claimant_id) REFERENCES users(id)
 );
-
-USE ucu_lost_found;
-SHOW TABLES;
