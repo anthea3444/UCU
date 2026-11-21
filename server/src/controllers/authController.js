@@ -1,5 +1,6 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
 const db = require('../config/db');
 
 exports.register = async (req, res) => {
@@ -38,12 +39,24 @@ exports.login = async (req, res) => {
     const token = jwt.sign(
       { id: user.id, role: user.role },
       process.env.JWT_SECRET,
-      { expiresIn: '1d' }
+      { expiresIn: '1d', jwtid: crypto.randomUUID() }
     );
     res.json({
       token,
       user: { id: user.id, full_name: user.full_name, email: user.email, role: user.role },
     });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+exports.logout = async (req, res) => {
+  try {
+    await db.query(
+      'INSERT IGNORE INTO revoked_tokens (jti, expires_at) VALUES (?, FROM_UNIXTIME(?))',
+      [req.user.jti, req.user.exp]
+    );
+    res.json({ message: 'Logged out' });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
