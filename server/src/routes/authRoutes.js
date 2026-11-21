@@ -2,9 +2,10 @@ const express = require('express');
 const router = express.Router();
 const { register, login, logout } = require('../controllers/authController');
 const { verifyToken, isAdmin } = require('../middleware/auth');
+const { validateRegister, validateLogin } = require('../middleware/validate');
 
-router.post('/register', register);
-router.post('/login', login);
+router.post('/register', validateRegister, register);
+router.post('/login', validateLogin, login);
 router.post('/logout', verifyToken, logout);
 
 // Test routes
